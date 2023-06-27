@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @Entity
-@Table(name = "user_job_info")
+@Table(name = "user_job_info", uniqueConstraints = @UniqueConstraint(columnNames = {"id_company", "user_id"}))
 public class UserJobInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +31,4 @@ public class UserJobInfo {
     private java.time.OffsetDateTime updated;
     @Column(name = "is_activity")
     private Boolean isActivity;
-
-    public UserJobInfo(UserJobInfo userJobInfo) {
-        this.id = userJobInfo.getId();
-        this.description = userJobInfo.getDescription();
-        this.created = userJobInfo.getCreated();
-        this.updated = userJobInfo.getUpdated();
-    }
 }

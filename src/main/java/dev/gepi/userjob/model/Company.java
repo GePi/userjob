@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,10 +12,10 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "company")
-@NoArgsConstructor
-public class Company{
+public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -32,15 +33,6 @@ public class Company{
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserJobInfo> userJobInfoList = new ArrayList<>();
 
-    public Company(Company company) {
-        this.id = company.getId();
-        this.companyName = company.getCompanyName();
-        this.description = company.getDescription();
-        this.created = company.getCreated();
-        this.updated = company.getUpdated();
-        this.isActivity = company.isActivity;
-    }
-
     public void addUserJobInfo(UserJobInfo userJobInfo) {
         userJobInfoList.add(userJobInfo);
         userJobInfo.setCompany(this);
@@ -49,5 +41,17 @@ public class Company{
     public void removeUserJobInfo(UserJobInfo userJobInfo) {
         userJobInfoList.remove(userJobInfo);
         userJobInfo.setCompany(null);
+    }
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", companyName='" + companyName + '\'' +
+                ", description='" + description + '\'' +
+                ", created=" + created +
+                ", updated=" + updated +
+                ", isActivity=" + isActivity +
+                '}';
     }
 }

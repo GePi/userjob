@@ -1,0 +1,2 @@
+Поскольку в метод обновления не приходит id связи, а приходят только id компании и id пользователя, для того чтобы его реализовать
+на поля таблицы user_job_info добавлены ограничения uniqueConstraints = @UniqueConstraint(columnNames = {"id_company", "user_id"}).

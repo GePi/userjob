@@ -49,7 +49,9 @@ public class UserJobClient {
         if (response.getStatusCode().is2xxSuccessful()) {
             System.out.println("Patched.");
             List<String> rates = response.getBody();
-
+            if (rates != null) {
+                rates.forEach(System.out::println);
+            }
         } else {
             System.out.println("Failed to save user job.");
         }

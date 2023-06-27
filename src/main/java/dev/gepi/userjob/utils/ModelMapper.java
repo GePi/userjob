@@ -6,32 +6,13 @@ import dev.gepi.userjob.api.dto.UserWithCompaniesDTO;
 import dev.gepi.userjob.model.Company;
 import dev.gepi.userjob.model.UserJobInfo;
 import dev.gepi.userjob.model.Users;
+import lombok.NonNull;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ModelMapper {
-    static public void map(UserJobDTO userJobDTO, UserJobInfo userJobInfo) {
-        userJobInfo.setDescription(userJobDTO.getUserJobInfo().getDescription());
-        userJobInfo.setIsActivity(userJobDTO.getUserJobInfo().getIsActivity());
-        userJobInfo.setCreated(OffsetDateTime.now());
-    }
-
-    static public void map(UserJobDTO userJobDTO, Company company) {
-        company.setCompanyName(userJobDTO.getCompany().getCompanyName());
-        company.setDescription(userJobDTO.getCompany().getDescription());
-        company.setIsActivity(userJobDTO.getCompany().getIsActivity());
-        company.setCreated(OffsetDateTime.now());
-    }
-
-    static public void map(UserJobDTO userJobDTO, Users user) {
-        user.setFamilyName(userJobDTO.getUsers().getFamilyName());
-        user.setFirstName(userJobDTO.getUsers().getFirstName());
-        user.setMiddleName(userJobDTO.getUsers().getMiddleName());
-        user.setCreated(OffsetDateTime.now());
-    }
-
     static public UserJobDTO.Users toDto(Users user) {
         if (user == null) {
             return null;
@@ -59,6 +40,16 @@ public class ModelMapper {
         return companyDto;
     }
 
+    static public UserJobDTO.UserJobInfo toDto(UserJobInfo userJobInfo) {
+        if (userJobInfo == null) {
+            return null;
+        }
+        UserJobDTO.UserJobInfo jobInfoDto = new UserJobDTO.UserJobInfo();
+        jobInfoDto.setDescription(userJobInfo.getDescription());
+        jobInfoDto.setIsActivity(userJobInfo.getIsActivity());
+        return jobInfoDto;
+    }
+
     static public UserWithCompaniesDTO toUserWithCompaniesDTO(Users user, List<Company> companies) {
         UserWithCompaniesDTO result = new UserWithCompaniesDTO();
         result.setUser(toDto(user));
@@ -71,6 +62,15 @@ public class ModelMapper {
         result.setCompany(toDto(company));
         result.setUsers(users.stream().map(ModelMapper::toDto).collect(Collectors.toList()));
         return result;
+    }
+
+    public static UserJobDTO createUserJobDTO(Users user, Company company, UserJobInfo userJobInfo) {
+        UserJobDTO userJobDTOResult = new UserJobDTO();
+
+        userJobDTOResult.setUsers(ModelMapper.toDto(user));
+        userJobDTOResult.setCompany(ModelMapper.toDto(company));
+        userJobDTOResult.setUserJobInfo(ModelMapper.toDto(userJobInfo));
+        return userJobDTOResult;
     }
 
     public static void toModel(UserJobDTO.Users userDto, Users user) {
@@ -93,5 +93,11 @@ public class ModelMapper {
     public static void toModel(UserJobDTO.UserJobInfo userJobInfoDto, UserJobInfo userJobInfo) {
         userJobInfo.setDescription(userJobInfoDto.getDescription());
         userJobInfo.setIsActivity(userJobInfoDto.getIsActivity());
+    }
+
+    public static void toModel(UserJobDTO userJobDTO, Users user, Company company, UserJobInfo userJobInfo) {
+        ModelMapper.toModel(userJobDTO.getUsers(), user);
+        ModelMapper.toModel(userJobDTO.getCompany(), company);
+        ModelMapper.toModel(userJobDTO.getUserJobInfo(), userJobInfo);
     }
 }

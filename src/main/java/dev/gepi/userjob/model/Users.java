@@ -1,10 +1,7 @@
 package dev.gepi.userjob.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "users")
 public class Users {
@@ -42,20 +40,6 @@ public class Users {
     private Boolean isBlocked;
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserJobInfo> userJobInfoList = new ArrayList<>();
-
-    public Users(Users users) {
-        this.id = users.getId();
-        this.familyName = users.getFamilyName();
-        this.middleName = users.getMiddleName();
-        this.firstName = users.getFirstName();
-        this.birthday = users.getBirthday();
-        this.gender = users.getGender();
-        this.age = users.getAge();
-        this.description = users.getDescription();
-        this.isBlocked = users.getIsBlocked();
-        this.created = users.getCreated();
-        this.updated = users.getUpdated();
-    }
 
     public void addUserJobInfo(UserJobInfo userJobInfo) {
         userJobInfoList.add(userJobInfo);
