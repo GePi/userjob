@@ -45,7 +45,6 @@ public class UserJobService {
 
     @Transactional
     public void save(Company company, Users user) {
-        // TODO может быть стоит завернуть ошибки БД (при параллельном выполнении н-р)
         usersRepo.save(user);
         companyRepo.save(company);
     }

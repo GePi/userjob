@@ -2,10 +2,12 @@ package dev.gepi.userjob.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "user_job_info")
 public class UserJobInfo {
@@ -27,4 +29,11 @@ public class UserJobInfo {
     private java.time.OffsetDateTime updated;
     @Column(name = "is_activity")
     private Boolean isActivity;
+
+    public UserJobInfo(UserJobInfo userJobInfo) {
+        this.id = userJobInfo.getId();
+        this.description = userJobInfo.getDescription();
+        this.created = userJobInfo.getCreated();
+        this.updated = userJobInfo.getUpdated();
+    }
 }

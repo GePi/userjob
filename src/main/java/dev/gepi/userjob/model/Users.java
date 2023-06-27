@@ -40,9 +40,22 @@ public class Users {
     private java.time.OffsetDateTime updated;
     @Column(name = "is_blocked")
     private Boolean isBlocked;
-
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserJobInfo> userJobInfoList = new ArrayList<>();
+
+    public Users(Users users) {
+        this.id = users.getId();
+        this.familyName = users.getFamilyName();
+        this.middleName = users.getMiddleName();
+        this.firstName = users.getFirstName();
+        this.birthday = users.getBirthday();
+        this.gender = users.getGender();
+        this.age = users.getAge();
+        this.description = users.getDescription();
+        this.isBlocked = users.getIsBlocked();
+        this.created = users.getCreated();
+        this.updated = users.getUpdated();
+    }
 
     public void addUserJobInfo(UserJobInfo userJobInfo) {
         userJobInfoList.add(userJobInfo);

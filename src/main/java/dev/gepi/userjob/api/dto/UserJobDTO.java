@@ -25,8 +25,6 @@ public class UserJobDTO {
 
     @Data
     public static class UserJobInfo {
-        private Long idCompany;
-        private Long userId;
         private String description;
         private Boolean isActivity;
     }

@@ -1,17 +1,20 @@
 package dev.gepi.userjob.api;
 
-import dev.gepi.userjob.api.dto.ModelMapper;
+import dev.gepi.userjob.utils.EntityComparatorUtil;
+import dev.gepi.userjob.utils.ModelMapper;
 import dev.gepi.userjob.api.dto.UserJobDTO;
 import dev.gepi.userjob.model.Company;
 import dev.gepi.userjob.model.UserJobInfo;
 import dev.gepi.userjob.model.Users;
 import dev.gepi.userjob.services.UserJobService;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -27,17 +30,18 @@ public class UserJobController {
 
     @PostMapping("create-userjob")
     public ResponseEntity<Void> postUserJob(@RequestBody UserJobDTO userJobDTO) {
-        Users user = getUser(userJobDTO);
-        Company company = getCompany(userJobDTO);
+        if (userJobDTO == null || userJobDTO.getUsers() == null || userJobDTO.getCompany() == null || userJobDTO.getUserJobInfo() == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
-        if (company == null || user == null) {
+        Users user = getUser(userJobDTO.getUsers());
+        Company company = getCompany(userJobDTO.getCompany());
+
+        if (company.getId() != null || user.getId() != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        UserJobInfo userJobInfo = getUserJobInfo(userJobDTO, user, company);
-        if (userJobInfo.getId() != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        UserJobInfo userJobInfo = getUserJobInfo(userJobDTO.getUserJobInfo());
 
         company.addUserJobInfo(userJobInfo);
         user.addUserJobInfo(userJobInfo);
@@ -47,8 +51,12 @@ public class UserJobController {
     }
 
     @PatchMapping("update-userjob")
-    public ResponseEntity<UserJobDTO> patchUserJob(@RequestBody UserJobDTO userJobDTO) {
-        UserJobDTO result;
+    public ResponseEntity<List<String>> patchUserJob(@RequestBody UserJobDTO userJobDTO) throws IllegalAccessException {
+
+        if (userJobDTO == null || userJobDTO.getUsers() == null || userJobDTO.getCompany() == null || userJobDTO.getUserJobInfo() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
         Users user = userJobService.getUserById(userJobDTO.getUsers().getUserId());
         Company company = userJobService.getCompanyById(userJobDTO.getCompany().getIdCompany());
 
@@ -65,17 +73,26 @@ public class UserJobController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        OffsetDateTime now = OffsetDateTime.now();
+        Users userPrevState = new Users(user);
+        Company companyPrevState = new Company(company);
+        UserJobInfo userJobInfoPrevState = new UserJobInfo(userJobInfo);
+
         ModelMapper.toModel(userJobDTO.getUsers(), user);
         ModelMapper.toModel(userJobDTO.getCompany(), company);
         ModelMapper.toModel(userJobDTO.getUserJobInfo(), userJobInfo);
+        OffsetDateTime now = OffsetDateTime.now();
         user.setUpdated(now);
         company.setUpdated(now);
         userJobInfo.setUpdated(now);
 
         userJobService.save(company, user);
-        result = userJobDTO;
-        return ResponseEntity.ok(result);
+
+        List<String> resultList = new ArrayList<>();
+        resultList.addAll(EntityComparatorUtil.getDifferentFields(user, userPrevState));
+        resultList.addAll(EntityComparatorUtil.getDifferentFields(company, companyPrevState));
+        resultList.addAll(EntityComparatorUtil.getDifferentFields(userJobInfo, userJobInfoPrevState));
+
+        return ResponseEntity.ok(resultList);
     }
 
     @GetMapping("get-userjob")
@@ -104,37 +121,32 @@ public class UserJobController {
         }
     }
 
-    private UserJobInfo getUserJobInfo(UserJobDTO userJobDTO, Users user, Company company) {
-        UserJobInfo userJobInfo;
-        if (user.getId() != null && company.getId() != null) {
-            userJobInfo = userJobService.getUserJobInfoByUserIdAndCompanyId(user.getId(), company.getId());
-            if (userJobInfo != null) {
-                return userJobInfo;
-            }
-        }
-        userJobInfo = new UserJobInfo();
-        ModelMapper.map(userJobDTO, userJobInfo);
+    private UserJobInfo getUserJobInfo(@NonNull UserJobDTO.UserJobInfo userJobInfoDto) {
+        UserJobInfo userJobInfo = new UserJobInfo();
+        ModelMapper.toModel(userJobInfoDto, userJobInfo);
         return userJobInfo;
     }
 
-    private Company getCompany(UserJobDTO userJobDTO) {
-        Company company;
-        if (userJobDTO.getUserJobInfo().getIdCompany() == null) {
+    private Company getCompany(@NonNull UserJobDTO.Company companyDto) {
+        Company company = null;
+        if (companyDto.getIdCompany() != null) {
+            company = userJobService.getCompanyById(companyDto.getIdCompany());
+        }
+        if (company == null) {
             company = new Company();
-            ModelMapper.map(userJobDTO, company);
-        } else {
-            company = userJobService.getCompanyById(userJobDTO.getUserJobInfo().getIdCompany());
+            ModelMapper.toModel(companyDto, company);
         }
         return company;
     }
 
-    private Users getUser(UserJobDTO userJobDTO) {
-        Users user;
-        if (userJobDTO.getUserJobInfo().getUserId() == null) {
+    private Users getUser(@NonNull UserJobDTO.Users userDto) {
+        Users user = null;
+        if (userDto.getUserId() != null) {
+            user = userJobService.getUserById(userDto.getUserId());
+        }
+        if (user == null) {
             user = new Users();
-            ModelMapper.map(userJobDTO, user);
-        } else {
-            user = userJobService.getUserById(userJobDTO.getUserJobInfo().getUserId());
+            ModelMapper.toModel(userDto, user);
         }
         return user;
     }

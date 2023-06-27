@@ -2,6 +2,7 @@ package dev.gepi.userjob.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -12,7 +13,8 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "company")
-public class Company {
+@NoArgsConstructor
+public class Company{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -29,6 +31,15 @@ public class Company {
     private Boolean isActivity;
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserJobInfo> userJobInfoList = new ArrayList<>();
+
+    public Company(Company company) {
+        this.id = company.getId();
+        this.companyName = company.getCompanyName();
+        this.description = company.getDescription();
+        this.created = company.getCreated();
+        this.updated = company.getUpdated();
+        this.isActivity = company.isActivity;
+    }
 
     public void addUserJobInfo(UserJobInfo userJobInfo) {
         userJobInfoList.add(userJobInfo);

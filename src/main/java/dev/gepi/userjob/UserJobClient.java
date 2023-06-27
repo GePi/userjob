@@ -3,11 +3,14 @@ package dev.gepi.userjob;
 import dev.gepi.userjob.api.dto.UserJobDTO;
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 
 public class UserJobClient {
@@ -41,9 +44,12 @@ public class UserJobClient {
 
         HttpEntity<UserJobDTO> request = new HttpEntity<>(userJobDTO, headers);
 
-        ResponseEntity<UserJobDTO> response = restTemplate.exchange(BASE_URL + "update-userjob", HttpMethod.PATCH, request, UserJobDTO.class);
+        ResponseEntity<List<String>> response = restTemplate.exchange(BASE_URL + "update-userjob", HttpMethod.PATCH, request, new ParameterizedTypeReference<List<String>>() {
+        });
         if (response.getStatusCode().is2xxSuccessful()) {
             System.out.println("Patched.");
+            List<String> rates = response.getBody();
+
         } else {
             System.out.println("Failed to save user job.");
         }

@@ -1,5 +1,8 @@
-package dev.gepi.userjob.api.dto;
+package dev.gepi.userjob.utils;
 
+import dev.gepi.userjob.api.dto.CompanyWithUsersDTO;
+import dev.gepi.userjob.api.dto.UserJobDTO;
+import dev.gepi.userjob.api.dto.UserWithCompaniesDTO;
 import dev.gepi.userjob.model.Company;
 import dev.gepi.userjob.model.UserJobInfo;
 import dev.gepi.userjob.model.Users;
