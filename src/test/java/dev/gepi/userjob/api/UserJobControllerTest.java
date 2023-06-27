@@ -1,6 +1,7 @@
 package dev.gepi.userjob.api;
 
 
+import dev.gepi.userjob.api.dto.UserJobDTO;
 import dev.gepi.userjob.model.Company;
 import dev.gepi.userjob.model.Users;
 import dev.gepi.userjob.services.UserJobService;
@@ -24,11 +25,11 @@ public class UserJobControllerTest {
     @Test
     public void testPostUserJobRequest() {
 // Arrange
-        UserJobRequestDTO userJobRequestDTO = new UserJobRequestDTO();
-        UserJobRequestDTO.UserJobInfo userJobInfo = new UserJobRequestDTO.UserJobInfo();
+        UserJobDTO userJobDTO = new UserJobDTO();
+        UserJobDTO.UserJobInfo userJobInfo = new UserJobDTO.UserJobInfo();
         userJobInfo.setUserId(1L);
         userJobInfo.setIdCompany(2L);
-        userJobRequestDTO.setUserJobInfo(userJobInfo);
+        userJobDTO.setUserJobInfo(userJobInfo);
 
         Company company = new Company();
         company.setId(2L);
@@ -38,7 +39,7 @@ public class UserJobControllerTest {
         when(userJobService.getCompanyById(2L)).thenReturn(company);
 
         // Act
-        userJobController.postUserJob(userJobRequestDTO);
+        userJobController.postUserJob(userJobDTO);
 
         // Assert
         verify(userJobService, times(1)).save(company, user);

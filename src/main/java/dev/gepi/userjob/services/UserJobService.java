@@ -39,6 +39,10 @@ public class UserJobService {
         return companyRepo.FindAllUserCompanies(userId);
     }
 
+    public List<Users> getUsersByCompanyId(Long companyId) {
+        return usersRepo.FindAllCompanyUsers(companyId);
+    }
+
     @Transactional
     public void save(Company company, Users user) {
         // TODO может быть стоит завернуть ошибки БД (при параллельном выполнении н-р)

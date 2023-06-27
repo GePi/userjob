@@ -1,11 +1,11 @@
-package dev.gepi.userjob.api;
+package dev.gepi.userjob.api.dto;
 
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class UserJobRequestDTO {
+public class UserJobDTO {
     private Users users = new Users();
     private UserJobInfo userJobInfo = new UserJobInfo();
     private Company company = new Company();

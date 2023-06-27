@@ -1,24 +1,26 @@
 package dev.gepi.userjob;
 
-import dev.gepi.userjob.api.UserJobRequestDTO;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import dev.gepi.userjob.api.dto.UserJobDTO;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
 
 public class UserJobClient {
 
     private static final String BASE_URL = "http://localhost:8080/api/v1/";
 
-    public void postUserJob(UserJobRequestDTO userJobRequestDTO) {
+    public void postUserJob(UserJobDTO userJobDTO) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<UserJobRequestDTO> request = new HttpEntity<>(userJobRequestDTO, headers);
+        HttpEntity<UserJobDTO> request = new HttpEntity<>(userJobDTO, headers);
         ResponseEntity<Void> response = restTemplate.postForEntity(BASE_URL + "create-userjob", request, Void.class);
 
         if (response.getStatusCode().is2xxSuccessful()) {
@@ -28,23 +30,50 @@ public class UserJobClient {
         }
     }
 
+    public void patchUserJob(UserJobDTO userJobDTO) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpClient httpClient = HttpClientBuilder.create().build();
+
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<UserJobDTO> request = new HttpEntity<>(userJobDTO, headers);
+
+        ResponseEntity<UserJobDTO> response = restTemplate.exchange(BASE_URL + "update-userjob", HttpMethod.PATCH, request, UserJobDTO.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            System.out.println("Patched.");
+        } else {
+            System.out.println("Failed to save user job.");
+        }
+    }
+
+    private ClientHttpRequestFactory getClientHttpRequestFactory() {
+        int timeout = 5000;
+        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
+                = new HttpComponentsClientHttpRequestFactory();
+        clientHttpRequestFactory.setConnectTimeout(timeout);
+        return clientHttpRequestFactory;
+    }
+
     public void getUserJob() {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        UserJobRequestDTO.Users user = new UserJobRequestDTO.Users();
+        UserJobDTO.Users user = new UserJobDTO.Users();
         //user.setUserId(1L);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(BASE_URL + "get-userjob")
                 .queryParam("user", user);
 
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
-        ResponseEntity<UserJobRequestDTO[]> response = restTemplate.getForEntity(builder.toUriString(), UserJobRequestDTO[].class);
+        ResponseEntity<UserJobDTO[]> response = restTemplate.getForEntity(builder.toUriString(), UserJobDTO[].class);
 
         if (response.getStatusCode().is2xxSuccessful()) {
-            UserJobRequestDTO[] userJobRequestDTOS = response.getBody();
+            UserJobDTO[] userJobDTOS = response.getBody();
             return; // Arrays.asList(userJobRequests);
         } else {
             System.out.println("Failed to get user job.");
