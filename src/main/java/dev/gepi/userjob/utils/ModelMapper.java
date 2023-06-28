@@ -6,7 +6,6 @@ import dev.gepi.userjob.api.dto.UserWithCompaniesDTO;
 import dev.gepi.userjob.model.Company;
 import dev.gepi.userjob.model.UserJobInfo;
 import dev.gepi.userjob.model.Users;
-import lombok.NonNull;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -21,6 +20,7 @@ public class ModelMapper {
         userDto.setUserId(user.getId());
         userDto.setDescription(user.getDescription());
         userDto.setIsBlocked(user.getIsBlocked());
+        userDto.setBirthday(user.getBirthday());
         userDto.setAge(user.getAge());
         userDto.setFirstName(user.getFirstName());
         userDto.setMiddleName(user.getMiddleName());
@@ -37,6 +37,7 @@ public class ModelMapper {
         companyDto.setIdCompany(company.getId());
         companyDto.setCompanyName(company.getCompanyName());
         companyDto.setIsActivity(company.getIsActivity());
+        companyDto.setDescription(company.getDescription());
         return companyDto;
     }
 
@@ -99,5 +100,17 @@ public class ModelMapper {
         ModelMapper.toModel(userJobDTO.getUsers(), user);
         ModelMapper.toModel(userJobDTO.getCompany(), company);
         ModelMapper.toModel(userJobDTO.getUserJobInfo(), userJobInfo);
+    }
+
+    public static void setUpdated(OffsetDateTime updatedAt, Users user, Company company, UserJobInfo userJobInfo) {
+        user.setUpdated(updatedAt);
+        company.setUpdated(updatedAt);
+        userJobInfo.setUpdated(updatedAt);
+    }
+
+    public static void setCreated(OffsetDateTime createdAt, Users user, Company company, UserJobInfo userJobInfo) {
+        user.setCreated(createdAt);
+        company.setCreated(createdAt);
+        userJobInfo.setCreated(createdAt);
     }
 }

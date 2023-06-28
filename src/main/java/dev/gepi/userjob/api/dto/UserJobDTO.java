@@ -3,7 +3,7 @@ package dev.gepi.userjob.api.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @EqualsAndHashCode
@@ -19,7 +19,7 @@ public class UserJobDTO {
         private String familyName;
         private String middleName;
         private String firstName;
-        private Date birthday;
+        private LocalDate birthday;
         private String gender;
         private Integer age;
         private String description;
@@ -40,5 +40,16 @@ public class UserJobDTO {
         private String companyName;
         private String description;
         private Boolean isActivity;
+    }
+
+    public static UserJobDTO createInitial() {
+        UserJobDTO userJobDTO = new UserJobDTO();
+        UserJobDTO.UserJobInfo userJobInfo = new UserJobDTO.UserJobInfo();
+        UserJobDTO.Users users = new UserJobDTO.Users();
+        UserJobDTO.Company company = new UserJobDTO.Company();
+        userJobDTO.setUserJobInfo(userJobInfo);
+        userJobDTO.setUsers(users);
+        userJobDTO.setCompany(company);
+        return userJobDTO;
     }
 }

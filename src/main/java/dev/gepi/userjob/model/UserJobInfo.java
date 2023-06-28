@@ -4,12 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "user_job_info", uniqueConstraints = @UniqueConstraint(columnNames = {"id_company", "user_id"}))
 public class UserJobInfo {
@@ -31,4 +29,16 @@ public class UserJobInfo {
     private java.time.OffsetDateTime updated;
     @Column(name = "is_activity")
     private Boolean isActivity;
+
+    @Override
+    public String toString() {
+        return "UserJobInfo{" +
+                "id=" + id +
+                ", users=" + users +
+                ", description='" + description + '\'' +
+                ", created=" + created +
+                ", updated=" + updated +
+                ", isActivity=" + isActivity +
+                '}';
+    }
 }

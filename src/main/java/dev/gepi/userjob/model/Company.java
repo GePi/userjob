@@ -1,18 +1,16 @@
 package dev.gepi.userjob.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "company")
 public class Company {
@@ -53,5 +51,18 @@ public class Company {
                 ", updated=" + updated +
                 ", isActivity=" + isActivity +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Company company = (Company) o;
+        return Objects.equals(id, company.id) && Objects.equals(companyName, company.companyName) && Objects.equals(description, company.description) && Objects.equals(created, company.created) && Objects.equals(updated, company.updated) && Objects.equals(isActivity, company.isActivity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, companyName, description, created, updated, isActivity);
     }
 }
