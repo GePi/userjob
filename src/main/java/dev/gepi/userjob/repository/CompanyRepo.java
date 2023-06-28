@@ -1,7 +1,6 @@
 package dev.gepi.userjob.repository;
 
 import dev.gepi.userjob.model.Company;
-import dev.gepi.userjob.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

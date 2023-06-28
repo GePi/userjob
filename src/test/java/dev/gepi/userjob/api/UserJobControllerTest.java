@@ -1,6 +1,5 @@
 package dev.gepi.userjob.api;
 
-
 import dev.gepi.userjob.api.dto.CompanyWithUsersDTO;
 import dev.gepi.userjob.api.dto.UserJobDTO;
 import dev.gepi.userjob.api.dto.UserWithCompaniesDTO;

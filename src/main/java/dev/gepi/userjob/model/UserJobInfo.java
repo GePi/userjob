@@ -1,6 +1,7 @@
 package dev.gepi.userjob.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "user_job_info", uniqueConstraints = @UniqueConstraint(columnNames = {"id_company", "user_id"}))
 public class UserJobInfo {
